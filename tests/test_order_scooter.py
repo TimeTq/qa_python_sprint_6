@@ -6,7 +6,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 from ..data import MAIN_URL, DZEN_URL, DZEN_REDIRECT_URL
 from ..pages.main_page import MainPage
 from ..pages.order_page import OrderPage
-from ..pages.track_page import TrackPage
 
 
 class TestOrderScooter:
@@ -23,7 +22,6 @@ class TestOrderScooter:
 
         cls.main_page = MainPage(cls.driver)
         cls.order_page = OrderPage(cls.driver)
-        cls.track_page = TrackPage(cls.driver)
 
         cls.driver.get(MAIN_URL)
         cls.main_page.click_accept_cookies()
@@ -46,7 +44,7 @@ class TestOrderScooter:
     ]
 
     @pytest.mark.parametrize('order_button_index, user_info, rent_info', order_flow_data)
-    @allure.step('Проверить весь путь заказа самоката позитивного сценария с двумя наборами данных')
+    @allure.title('Проверить весь путь заказа самоката позитивного сценария с двумя наборами данных')
     def test_correct_order_buttons_redirection_none_url_is_order_page(self, order_button_index, user_info, rent_info):
         self.driver.get(MAIN_URL)
 
@@ -63,17 +61,17 @@ class TestOrderScooter:
 
         # Проверить, что появилось всплывающее окно с сообщением об успешном создании заказа.
         self.order_page.check_success_order_message()
-        self.order_page.click_watch_status_button()
 
-        # Проверить: если нажать на логотип Яндекса, в новом окне через редирект откроется главная страница Дзена.
-        self.track_page.click_yandex_logo_icon()
-        self.driver.switch_to.window(self.driver.window_handles[1])
+    @allure.title('Если нажать на логотип «Самоката», попадёшь на главную страницу «Самоката»')
+    def test_click_scooter_logo_none_url_is_main_page(self):
+        self.main_page.load_page()
+        self.main_page.click_scooter_logo_icon()
+        assert self.main_page.current_url == MAIN_URL
 
-        self.wait.until(lambda driver: driver.current_url.startswith(DZEN_URL))
-        assert self.driver.current_url == DZEN_REDIRECT_URL
-        self.driver.close()
-        self.driver.switch_to.window(self.driver.window_handles[0])
+    @allure.title('Если нажать на логотип Яндекса, в новом окне через редирект откроется главная страница Дзена')
+    def test_click_yandex_logo_none_url_is_dzen_page(self):
+        self.main_page.load_page()
+        self.main_page.click_yandex_logo_icon()
 
-        # Проверить: если нажать на логотип «Самоката», попадёшь на главную страницу «Самоката».
-        self.track_page.click_scooter_logo_icon()
-        assert self.driver.current_url == MAIN_URL
+        self.main_page.switch_to_new_page(DZEN_URL)
+        assert self.main_page.current_url == DZEN_REDIRECT_URL
