@@ -51,7 +51,3 @@ class MainPage(BasePage):
     @allure.step('Переход по логотипу "Яндекса"')
     def click_yandex_logo_icon(self):
         self._click(self.yandex_logo_icon)
-
-    @allure.step('Переход по логотипу "Яндекса"')
-    def check_dzen_opened(self):
-        pass

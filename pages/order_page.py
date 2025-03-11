@@ -34,6 +34,9 @@ class OrderPage(BasePage):
 
     order_done_div = [By.CLASS_NAME, 'Order_ModalHeader__3FDaJ']
 
+    label_tag = [By.TAG_NAME, 'label']
+    input_tag = [By.TAG_NAME, 'input']
+
     def __init__(self, driver):
         super().__init__(driver)
 
@@ -95,10 +98,10 @@ class OrderPage(BasePage):
 
     @allure.step('Заполнение цвета самоката')
     def set_scooter_color(self, value):
-        colors_check_box = self.driver.find_element(*self.scooter_color_checkbox)
-        for checkbox in self._find_elements([By.TAG_NAME, 'label'], element=colors_check_box):
+        colors_check_box = self._find_element(self.scooter_color_checkbox)
+        for checkbox in self._find_elements(self.label_tag, element=colors_check_box):
             if checkbox.text == value:
-                self._click([By.TAG_NAME, 'input'], element=checkbox)
+                self._click(self.input_tag, element=checkbox)
 
     @allure.step('Заполнение комментария курьеру')
     def set_currier_comment(self, value):

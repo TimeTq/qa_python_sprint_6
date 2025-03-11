@@ -3,7 +3,7 @@ import pytest
 from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
 
-from ..data import MAIN_URL, DZEN_URL, DZEN_REDIRECT_URL
+from ..data import MAIN_URL, DZEN_URL, DZEN_REDIRECT_URL, ORDER_FLOW_DATA
 from ..pages.main_page import MainPage
 from ..pages.order_page import OrderPage
 
@@ -30,23 +30,10 @@ class TestOrderScooter:
     def teardown_class(cls):
         cls.driver.quit()
 
-    order_flow_data = [
-        [
-            0,
-            ['имяодин', 'фамилияодин', 'адресодин', 'Университет', 11111111111],
-            ['сутки', 'чёрный жемчуг', 'комментарий 1'],
-        ],
-        [
-            1,
-            ['имядва', 'фамилиядва', 'адресдва', 'Комсомольская', 22222222222],
-            ['сутки', 'серая безысходность', 'комментарий 2'],
-        ],
-    ]
-
-    @pytest.mark.parametrize('order_button_index, user_info, rent_info', order_flow_data)
+    @pytest.mark.parametrize('order_button_index, user_info, rent_info', ORDER_FLOW_DATA)
     @allure.title('Проверить весь путь заказа самоката позитивного сценария с двумя наборами данных')
     def test_correct_order_buttons_redirection_none_url_is_order_page(self, order_button_index, user_info, rent_info):
-        self.driver.get(MAIN_URL)
+        self.main_page.load_page()
 
         # Нажать кнопку «Заказать». На странице две кнопки заказа.
         self.main_page.click_order_button_by_index(order_button_index)
